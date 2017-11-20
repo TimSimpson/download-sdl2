@@ -5,26 +5,33 @@ project(sdl_import)
 include(CMakePackageConfigHelpers)
 
 
+if (WIN32)
+    file(DOWNLOAD
+        "https://www.libsdl.org/release/SDL2-devel-2.0.7-VC.zip"
+        "${PROJECT_BINARY_DIR}/SDL2-devel-2.0.7-VC.zip"
+         SHOW_PROGRESS
+         EXPECTED_MD5 "b184cff52eb5a22c459d7943e9aeedb0")
+    file(REMOVE [file1 ...])
+    execute_process(
+        WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E tar xvf "${PROJECT_BINARY_DIR}/SDL2-devel-2.0.7-VC.zip"
+    )
 
-file(DOWNLOAD
-    "https://www.libsdl.org/release/SDL2-devel-2.0.7-VC.zip"
-    "${PROJECT_BINARY_DIR}/SDL2-devel-2.0.7-VC.zip"
-     SHOW_PROGRESS
-     EXPECTED_MD5 "b184cff52eb5a22c459d7943e9aeedb0")
-file(REMOVE [file1 ...])
-execute_process(
-    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E tar xvf "${PROJECT_BINARY_DIR}/SDL2-devel-2.0.7-VC.zip"
-)
+    install(
+        DIRECTORY "${PROJECT_BINARY_DIR}/SDL2-2.0.7/include/"
+        DESTINATION include)
 
-install(DIRECTORY "${PROJECT_BINARY_DIR}/SDL2-2.0.7/include/" DESTINATION include)
-
-if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
-    install(DIRECTORY "${PROJECT_BINARY_DIR}/SDL2-2.0.7/lib/x86/" DESTINATION lib)
-elseif ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
-    install(DIRECTORY "${PROJECT_BINARY_DIR}/SDL2-2.0.7/lib/x64/" DESTINATION lib)
-else()
-    message(FATAL_ERROR "Architecture unknown.")
+    if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+        install(
+            DIRECTORY "${PROJECT_BINARY_DIR}/SDL2-2.0.7/lib/x86/"
+            DESTINATION lib)
+    elseif ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+        install(
+            DIRECTORY "${PROJECT_BINARY_DIR}/SDL2-2.0.7/lib/x64/"
+            DESTINATION lib)
+    else()
+        message(FATAL_ERROR "Architecture unknown.")
+    endif()
 endif()
 
 
