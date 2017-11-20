@@ -4,9 +4,7 @@
 #include <SDL.h>
 
 int main(int argc, char* argv[]) {
-    SDL_assert(false);
-
     SDL_Log("Greets Earth!");
-
+    SDL_assert(false);
     return 0;
 }

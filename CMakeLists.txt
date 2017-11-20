@@ -35,10 +35,15 @@ install(FILES "${SDL2}" DESTINATION lib)
 # ")
 
 
+# Turn off ridiculous defect that forces are library into 32 bit mode.
+set(_old_cmake_sizeof_void_p "${CMAKE_SIZEOF_VOID_P}")
+# Force 64-bit
+set(CMAKE_SIZEOF_VOID_P "8")
 write_basic_package_version_file("${PROJECT_BINARY_DIR}/sdl2-config-version.cmake"
     VERSION 2.0.7
     COMPATIBILITY AnyNewerVersion
 )
+set(CMAKE_SIZEOF_VOID_P "${_old_cmake_sizeof_void_p}")
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sdl2-config.cmake"

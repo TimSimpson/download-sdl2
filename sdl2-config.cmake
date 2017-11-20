@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.5)
 set(CMAKE_IMPORT_FILE_VERSION 2.0.7)
 
 # Hilariously complex way to find `include` directory in prefix dir.
-# So, why not use the prefix dir instead? I'm not sure, I'm just copying
-# what generated CMake looks like.
+# Remember, this file will be in "lib/cmake/sdl2", and we want this path
+# to point to "lib"'s neighbor, "include".
 get_filename_component(_IMPORT_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
 get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
 get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
