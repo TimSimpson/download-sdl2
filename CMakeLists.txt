@@ -1,19 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(sdl_import CXX)
+project(sdl_import)
 
 include(CMakePackageConfigHelpers)
-
-add_executable(dumb ${CMAKE_CURRENT_SOURCE_DIR}/src/dumb.cpp)
-enable_testing()
-add_test(dumb dumb)
-
-install(TARGETS dumb
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    INCLUDES DESTINATION include
-)
 
 if (WIN32)
     function(download_component directory url md5)
@@ -34,7 +23,6 @@ if (WIN32)
             DESTINATION include)
 
         if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
-            # message(FATAL_ERROR "You rat bastard. ${CMAKE_GENERATOR_PLATFORM} !!")
             install(
                 DIRECTORY "${PROJECT_BINARY_DIR}/${directory}/lib/x86/"
                 DESTINATION lib)
@@ -79,15 +67,10 @@ if (WIN32)
 endif()
 
 
-# Turn off ridiculous defect that forces our library into 32 bit mode.
-set(_old_cmake_sizeof_void_p "${CMAKE_SIZEOF_VOID_P}")
-
-set(CMAKE_SIZEOF_VOID_P "")
 write_basic_package_version_file("${PROJECT_BINARY_DIR}/sdl2-config-version.cmake"
     VERSION 2.0.7
     COMPATIBILITY AnyNewerVersion
 )
-set(CMAKE_SIZEOF_VOID_P "${_old_cmake_sizeof_void_p}")
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sdl2-config.cmake"
