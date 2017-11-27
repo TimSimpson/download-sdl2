@@ -1,9 +1,19 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(sdl_import)
+project(sdl_import CXX)
 
 include(CMakePackageConfigHelpers)
 
+add_executable(dumb ${CMAKE_CURRENT_SOURCE_DIR}/src/dumb.cpp)
+enable_testing()
+add_test(dumb dumb)
+
+install(TARGETS dumb
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    INCLUDES DESTINATION include
+)
 
 if (WIN32)
     function(download_component directory url md5)
@@ -24,6 +34,7 @@ if (WIN32)
             DESTINATION include)
 
         if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+            # message(FATAL_ERROR "You rat bastard. ${CMAKE_GENERATOR_PLATFORM} !!")
             install(
                 DIRECTORY "${PROJECT_BINARY_DIR}/${directory}/lib/x86/"
                 DESTINATION lib)
@@ -46,12 +57,6 @@ if (WIN32)
     )
 
     download_component(
-        "SDL2_image-2.0.2"
-        "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.2-VC.zip"
-        "a731f9ce332f8acc0e4db1421a250ae2"
-    )
-
-    download_component(
         "SDL2_ttf-2.0.14"
         "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.14-VC.zip"
         "304d4aa67fec7a5a8c3c47c4639b91e2"
@@ -62,12 +67,21 @@ if (WIN32)
         "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.2-VC.zip"
         "0c0fb9bead99fcbd7cc8fdbed4bcd8eb"
     )
+
+    # SDL2_ttf downloads a version of zlib that conflicts with what SDL2_image
+    # uses (yeah, I know!). So it's crucial to install SDL2_image last to
+    # ensure it actually works!
+    download_component(
+        "SDL2_image-2.0.2"
+        "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.2-VC.zip"
+        "a731f9ce332f8acc0e4db1421a250ae2"
+    )
 endif()
 
 
-# Turn off ridiculous defect that forces are library into 32 bit mode.
+# Turn off ridiculous defect that forces our library into 32 bit mode.
 set(_old_cmake_sizeof_void_p "${CMAKE_SIZEOF_VOID_P}")
-# Force 64-bit
+
 set(CMAKE_SIZEOF_VOID_P "")
 write_basic_package_version_file("${PROJECT_BINARY_DIR}/sdl2-config-version.cmake"
     VERSION 2.0.7
