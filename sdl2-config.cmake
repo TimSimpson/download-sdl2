@@ -14,11 +14,13 @@ if(_IMPORT_PREFIX STREQUAL "/")
   set(_IMPORT_PREFIX "")
 endif()
 
-find_path(_INCLUDE_DIR SDL2/SDL.h
+find_path(_INCLUDE_DIR SDL.h
   PATHS
   "${_IMPORT_PREFIX}/include"
   "/usr/include"
+  "/usr/include/SDL2"
   "/usr/local/include"
+  "/usr/local/include/SDL2"
 )
 
 find_library(SDL2 NAMES "SDL2"
