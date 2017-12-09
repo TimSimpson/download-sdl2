@@ -14,53 +14,72 @@ if(_IMPORT_PREFIX STREQUAL "/")
   set(_IMPORT_PREFIX "")
 endif()
 
-find_path(_INCLUDE_DIR SDL.h
-  PATHS
-  "${_IMPORT_PREFIX}/include"
-  "/usr/include"
-  "/usr/include/SDL2"
-  "/usr/local/include"
-  "/usr/local/include/SDL2"
-)
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Emscripten")
+  # These libraries are defined to avoid build script errors, but
+  # are empty as they get included with Emscripten by default.
+  add_library(sdl2::sdl2 INTERFACE IMPORTED)
+  add_library(sdl2::image INTERFACE IMPORTED)
+  # Warning: TTF currently does not work:
+  add_library(sdl2::ttf INTERFACE IMPORTED)
+  add_library(sdl2::mixer INTERFACE IMPORTED)
 
-find_library(SDL2 NAMES "SDL2"
-  PATHS
-  "${CMAKE_CURRENT_SOURCE_DIR}/lib"
-  "/usr/lib/x86_64-linux-gnu")
-add_library(sdl2::sdl2 STATIC IMPORTED)
-set_property(TARGET sdl2::sdl2 PROPERTY IMPORTED_LOCATION "${SDL2}")
-set_target_properties(sdl2::sdl2 PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "${_INCLUDE_DIR}")
+  # TODO: This still won't work unless you set CMAKE_CXX_FLAGS as follows:
+  # set(CMAKE_CXX_FLAGS
+  #    "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s USE_SDL_IMAGE=2  -s SDL2_IMAGE_FORMATS='[\"png\",\"bmp\"]' ")
+  # I am not sure how to set these on dependents of an imported library.
+  # For now it seems like it would make users less flexible if they couldn't
+  # specify details, such as the SDL2_IMAGE_FORMATS, themselves.
 
+else()
+  find_path(_INCLUDE_DIR SDL.h
+    PATHS
+    "${_IMPORT_PREFIX}/include"
+    "/usr/include"
+    "/usr/include/SDL2"
+    "/usr/local/include"
+    "/usr/local/include/SDL2"
+  )
 
-find_library(SDL2_ttf NAMES "SDL2_ttf"
-  PATHS
-  "${CMAKE_CURRENT_SOURCE_DIR}/lib"
-  "/usr/lib/x86_64-linux-gnu")
-add_library(sdl2::ttf STATIC IMPORTED)
-set_property(TARGET sdl2::ttf PROPERTY IMPORTED_LOCATION "${SDL2_ttf}")
-set_target_properties(sdl2::ttf PROPERTIES
-  INTERFACE_LINK_LIBRARIES sdl2::sdl2)
-
-
-find_library(SDL2_image NAMES "SDL2_image"
-  PATHS
-  "${CMAKE_CURRENT_SOURCE_DIR}/lib"
-  "/usr/lib/x86_64-linux-gnu")
-add_library(sdl2::image STATIC IMPORTED)
-set_property(TARGET sdl2::image PROPERTY IMPORTED_LOCATION "${SDL2_image}")
-set_target_properties(sdl2::image PROPERTIES
-  INTERFACE_LINK_LIBRARIES sdl2::sdl2)
+  find_library(SDL2 NAMES "SDL2"
+    PATHS
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib"
+    "/usr/lib/x86_64-linux-gnu")
+  add_library(sdl2::sdl2 STATIC IMPORTED)
+  set_property(TARGET sdl2::sdl2 PROPERTY IMPORTED_LOCATION "${SDL2}")
+  set_target_properties(sdl2::sdl2 PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${_INCLUDE_DIR}")
 
 
-find_library(SDL2_mixer NAMES "SDL2_mixer"
-  PATHS
-  "${CMAKE_CURRENT_SOURCE_DIR}/lib"
-  "/usr/lib/x86_64-linux-gnu")
-add_library(sdl2::mixer STATIC IMPORTED)
-set_property(TARGET sdl2::mixer PROPERTY IMPORTED_LOCATION "${SDL2_mixer}")
-set_target_properties(sdl2::mixer PROPERTIES
-  INTERFACE_LINK_LIBRARIES sdl2::sdl2)
+  find_library(SDL2_ttf NAMES "SDL2_ttf"
+    PATHS
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib"
+    "/usr/lib/x86_64-linux-gnu")
+  add_library(sdl2::ttf STATIC IMPORTED)
+  set_property(TARGET sdl2::ttf PROPERTY IMPORTED_LOCATION "${SDL2_ttf}")
+  set_target_properties(sdl2::ttf PROPERTIES
+    INTERFACE_LINK_LIBRARIES sdl2::sdl2)
+
+
+  find_library(SDL2_image NAMES "SDL2_image"
+    PATHS
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib"
+    "/usr/lib/x86_64-linux-gnu")
+  add_library(sdl2::image STATIC IMPORTED)
+  set_property(TARGET sdl2::image PROPERTY IMPORTED_LOCATION "${SDL2_image}")
+  set_target_properties(sdl2::image PROPERTIES
+    INTERFACE_LINK_LIBRARIES sdl2::sdl2)
+
+
+  find_library(SDL2_mixer NAMES "SDL2_mixer"
+    PATHS
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib"
+    "/usr/lib/x86_64-linux-gnu")
+  add_library(sdl2::mixer STATIC IMPORTED)
+  set_property(TARGET sdl2::mixer PROPERTY IMPORTED_LOCATION "${SDL2_mixer}")
+  set_target_properties(sdl2::mixer PROPERTIES
+    INTERFACE_LINK_LIBRARIES sdl2::sdl2)
+
+endif()
 
 # Cleanup temporary variables.
 set(_IMPORT_PREFIX)

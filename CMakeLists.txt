@@ -78,6 +78,8 @@ if (WIN32)
         "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.2-VC.zip"
         "a731f9ce332f8acc0e4db1421a250ae2"
     )
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Emscripten")
+    # Do nothing, since Emscripten bundles this.
 else()
     file(REMOVE "${PROJECT_BINARY_DIR}/install")
     file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/install")
