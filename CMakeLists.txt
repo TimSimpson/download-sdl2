@@ -37,10 +37,11 @@ function(download_prebuilt directory url md5)
 endfunction()
 
 
-function(build_from_src directory url md5)
+function(build_from_src directory url md5 cfg_commands)
     get_filename_component(file_name "${url}" NAME)
 
-    ExternalProject_Add("${directory}"
+    if ("${cfg_commands}" EQUAL "")
+        ExternalProject_Add("${directory}"
         URL "${url}"
         URL_MD5 "${md5}"
         DOWNLOAD_DIR "${PROJECT_BINARY_DIR}/${directory}"
@@ -48,6 +49,17 @@ function(build_from_src directory url md5)
         CONFIGURE_COMMAND "${PROJECT_BINARY_DIR}/${directory}/configure"
                           "--prefix=${PROJECT_BINARY_DIR}/install"
         BUILD_COMMAND ${MAKE})
+    else()
+        ExternalProject_Add("${directory}"
+            URL "${url}"
+            URL_MD5 "${md5}"
+            DOWNLOAD_DIR "${PROJECT_BINARY_DIR}/${directory}"
+            SOURCE_DIR "${PROJECT_BINARY_DIR}/${directory}"
+            CONFIGURE_COMMAND "${PROJECT_BINARY_DIR}/${directory}/configure"
+                              "--prefix=${PROJECT_BINARY_DIR}/install"
+                              "${cfg_commands}"
+            BUILD_COMMAND ${MAKE})
+    endif()
 endfunction()
 
 
@@ -88,23 +100,28 @@ else()
         "SDL2-2.0.7"
         "https://www.libsdl.org/release/SDL2-2.0.7.tar.gz"
         "cdb071009d250e1782371049f0d5ca42"
+        ""
     )
     build_from_src(
         "SDL2_ttf-2.0.14"
         "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.14.tar.gz"
         "e53c05e1e7f1382c316afd6c763388b1"
+        ""
     )
     add_dependencies("SDL2_ttf-2.0.14" "SDL2-2.0.7")
     build_from_src(
         "SDL2_mixer-2.0.2"
         "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.2.tar.gz"
         "aaa0551393993c14a13f72b339c0ed6c"
+        ""
+        "--enable-music-ogg"
     )
     add_dependencies("SDL2_mixer-2.0.2" "SDL2-2.0.7")
     build_from_src(
         "SDL2_image-2.0.2"
         "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.2.tar.gz"
         "d0a83b9a2ca8371a3c85aefe402ae680"
+        ""
     )
     add_dependencies("SDL2_image-2.0.2" "SDL2-2.0.7")
 
