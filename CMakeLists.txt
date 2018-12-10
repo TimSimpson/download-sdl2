@@ -20,7 +20,7 @@ function(download_prebuilt directory url md5)
 
     install(
         DIRECTORY "${PROJECT_BINARY_DIR}/${directory}/include/"
-        DESTINATION include)
+        DESTINATION include/SDL2)
 
     if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
         install(
