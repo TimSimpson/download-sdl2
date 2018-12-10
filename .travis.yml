@@ -1,0 +1,24 @@
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libfreetype6-dev
+
+install:
+  pip install --user cmake cget
+
+script:
+  - which cmake
+  - cmake --version
+  - mkdir test/build
+  - cd test/build
+  - cget install ../..
+  - cmake -DCMAKE_TOOLCHAIN_FILE=cget/cget/cget.cmake -H.. -B./
+  - cmake --build .

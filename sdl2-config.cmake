@@ -1,7 +1,7 @@
 include(CMakeFindDependencyMacro)
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_IMPORT_FILE_VERSION 2.0.7)
+set(CMAKE_IMPORT_FILE_VERSION 2.0.8)
 
 # Hilariously complex way to find `include` directory in prefix dir.
 # Remember, this file will be in "lib/cmake/sdl2", and we want this path
@@ -33,7 +33,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Emscripten")
 else()
   find_path(_INCLUDE_DIR SDL.h
     PATHS
-    "${_IMPORT_PREFIX}/include"
+    "${_IMPORT_PREFIX}/include/SDL2"
     "/usr/include"
     "/usr/include/SDL2"
     "/usr/local/include"

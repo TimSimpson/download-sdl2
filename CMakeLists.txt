@@ -65,9 +65,9 @@ endfunction()
 
 if (WIN32)
     download_prebuilt(
-        "SDL2-2.0.7"
-        "https://www.libsdl.org/release/SDL2-devel-2.0.7-VC.zip"
-        "b184cff52eb5a22c459d7943e9aeedb0"
+        "SDL2-2.0.8"
+        "https://www.libsdl.org/release/SDL2-devel-2.0.8-VC.zip"
+        "c848c457ad7ec0db3b96a77c2e5bc83d"
     )
 
     download_prebuilt(
@@ -86,9 +86,9 @@ if (WIN32)
     # uses (yeah, I know!). So it's crucial to install SDL2_image last to
     # ensure it actually works!
     download_prebuilt(
-        "SDL2_image-2.0.2"
-        "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.2-VC.zip"
-        "a731f9ce332f8acc0e4db1421a250ae2"
+        "SDL2_image-2.0.3"
+        "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.3-VC.zip"
+        "1dc577c96e1029bed1df79ecfc80fe67"
     )
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Emscripten")
     # Do nothing, since Emscripten bundles this.
@@ -97,9 +97,9 @@ else()
     file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/install")
 
     build_from_src(
-        "SDL2-2.0.7"
-        "https://www.libsdl.org/release/SDL2-2.0.7.tar.gz"
-        "cdb071009d250e1782371049f0d5ca42"
+        "SDL2-2.0.8"
+        "https://www.libsdl.org/release/SDL2-2.0.8.tar.gz"
+        "3800d705cef742c6a634f202c37f263f"
         ""
     )
     build_from_src(
@@ -108,7 +108,7 @@ else()
         "e53c05e1e7f1382c316afd6c763388b1"
         ""
     )
-    add_dependencies("SDL2_ttf-2.0.14" "SDL2-2.0.7")
+    add_dependencies("SDL2_ttf-2.0.14" "SDL2-2.0.8")
     build_from_src(
         "SDL2_mixer-2.0.2"
         "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.2.tar.gz"
@@ -116,17 +116,17 @@ else()
         ""
         "--enable-music-ogg"
     )
-    add_dependencies("SDL2_mixer-2.0.2" "SDL2-2.0.7")
+    add_dependencies("SDL2_mixer-2.0.2" "SDL2-2.0.8")
     build_from_src(
-        "SDL2_image-2.0.2"
-        "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.2.tar.gz"
-        "d0a83b9a2ca8371a3c85aefe402ae680"
+        "SDL2_image-2.0.3"
+        "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.3.tar.gz"
+        "c6baf6dfa80fa8a66853661a36a6034e"
         ""
     )
-    add_dependencies("SDL2_image-2.0.2" "SDL2-2.0.7")
+    add_dependencies("SDL2_image-2.0.3" "SDL2-2.0.8")
 
     install(
-        DIRECTORY "${PROJECT_BINARY_DIR}/install/include/SDL2/"
+        DIRECTORY "${PROJECT_BINARY_DIR}/install/include/"
         DESTINATION include)
     install(
         DIRECTORY "${PROJECT_BINARY_DIR}/install/lib/"
@@ -141,7 +141,7 @@ endif()
 
 
 write_basic_package_version_file("${PROJECT_BINARY_DIR}/sdl2-config-version.cmake"
-    VERSION 2.0.7
+    VERSION 2.0.8
     COMPATIBILITY AnyNewerVersion
 )
 
