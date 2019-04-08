@@ -5,6 +5,25 @@ project(sdl_import)
 include(CMakePackageConfigHelpers)
 include(ExternalProject)
 
+
+
+
+set(DEFAULT_DOWNLOAD_SDL2_BUILD_FROM_SOURCE ON)
+if ("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+    set(DEFAULT_DOWNLOAD_SDL2_BUILD_FROM_SOURCE OFF)
+endif()
+set(DEFAULT_DOWNLOAD_SDL2_USE_MSVC ON)
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    set(DEFAULT_DOWNLOAD_SDL2_USE_MSVC OFF)
+endif()
+
+option(DOWNLOAD_SDL2_BUILD_FROM_SOURCE
+       "Whether to build from source on Windows (otherwise pre-built DLLs are used"
+       ${DEFAULT_DOWNLOAD_SDL2_BUILD_FROM_SOURCE})
+option(DOWNLOAD_SDL2_USE_MSVC
+       "If not building from source, specifieds whether to use MSVC dlls (if set to false, MinGW dlls are downloaded)"
+       ${DEFAULT_DOWNLOAD_SDL2_USE_MSVC})
+
 function(download_prebuilt directory url md5)
     get_filename_component(file_name "${url}" NAME)
     file(DOWNLOAD
@@ -63,33 +82,39 @@ function(build_from_src directory url md5 cfg_commands)
 endfunction()
 
 
-if (WIN32)
-    download_prebuilt(
-        "SDL2-2.0.8"
-        "https://www.libsdl.org/release/SDL2-devel-2.0.8-VC.zip"
-        "c848c457ad7ec0db3b96a77c2e5bc83d"
-    )
+if (NOT ${DOWNLOAD_SDL2_BUILD_FROM_SOURCE})
+    if (DOWNLOAD_SDL2_USE_MSVC)
+        MESSAGE(INFO "Downloading prebuild versions of the SDL2 libraries for MSVC")
+        download_prebuilt(
+            "SDL2-2.0.8"
+            "https://www.libsdl.org/release/SDL2-devel-2.0.8-VC.zip"
+            "c848c457ad7ec0db3b96a77c2e5bc83d"
+        )
 
-    download_prebuilt(
-        "SDL2_ttf-2.0.14"
-        "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.14-VC.zip"
-        "304d4aa67fec7a5a8c3c47c4639b91e2"
-    )
+        download_prebuilt(
+            "SDL2_ttf-2.0.14"
+            "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.14-VC.zip"
+            "304d4aa67fec7a5a8c3c47c4639b91e2"
+        )
 
-    download_prebuilt(
-        "SDL2_mixer-2.0.2"
-        "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.2-VC.zip"
-        "0c0fb9bead99fcbd7cc8fdbed4bcd8eb"
-    )
+        download_prebuilt(
+            "SDL2_mixer-2.0.2"
+            "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.2-VC.zip"
+            "0c0fb9bead99fcbd7cc8fdbed4bcd8eb"
+        )
 
-    # SDL2_ttf downloads a version of zlib that conflicts with what SDL2_image
-    # uses (yeah, I know!). So it's crucial to install SDL2_image last to
-    # ensure it actually works!
-    download_prebuilt(
-        "SDL2_image-2.0.3"
-        "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.3-VC.zip"
-        "1dc577c96e1029bed1df79ecfc80fe67"
-    )
+        # SDL2_ttf downloads a version of zlib that conflicts with what SDL2_image
+        # uses (yeah, I know!). So it's crucial to install SDL2_image last to
+        # ensure it actually works!
+        download_prebuilt(
+            "SDL2_image-2.0.3"
+            "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.3-VC.zip"
+            "1dc577c96e1029bed1df79ecfc80fe67"
+        )
+    else()
+        MESSAGE(INFO "Downloading prebuild versions of the SDL2 libraries for MinGW")
+        MESSAGE(FATAL_ERROR "Whoops, not implemented yet. Sorry.")
+    endif()
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Emscripten")
     # Do nothing, since Emscripten bundles this.
 else()

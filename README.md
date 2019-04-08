@@ -41,6 +41,10 @@ To use the SDL2 from your CMake project try this:
 * sdl2::mixer
 * sdl2::ttf
 
+Note: on Windows, the prebuilt libraries are downloaded instead. If you'd like the script to avoid this behavior and try to build from source, set the option `DOWNLOAD_SDL2_BUILD_FROM_SOURCE` to ON.
+
+If MSVC is detected, it will download the DLLs compatable with Microsoft Visual C++. If it isn't, it will try to download the MinGW versions. Set the option `DOWNLOAD_SDL2_USE_MSVC` if you'd like to force downloading the MSVC versions.
+
 ## Versions
 
 There's a few different versions of SDL2 available.
